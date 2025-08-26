@@ -1,4 +1,4 @@
-# 施小雅板材H5网站 V2
+# 施小雅板材H5网站 - CloudBase React 模板
 
 ## 版本信息
 
@@ -15,24 +15,11 @@
 - ✅ **添加短链接支持**：提供多种域名访问方案
 - ✅ **完善用户引导**：当访问受限时提供清晰的解决步骤
 
-#### V1.2.0 (2025-08-25)
-- ✅ 完成基础网站架构搭建
-- ✅ 集成腾讯云开发CloudBase
-- ✅ 实现响应式设计
-- ✅ 添加产品展示功能
-- ✅ 集成询盘管理系统
-
 ---
 
 # CloudBase React 模板
 
 基于 React、Vite 和腾讯云开发（CloudBase）的现代化 Web 应用模板，为开发者提供了快速构建全栈应用的能力。
-
-
-[![Powered by CloudBase](https://7463-tcb-advanced-a656fc-1257967285.tcb.qcloud.la/mcp/powered-by-cloudbase-badge.svg)](https://github.com/TencentCloudBase/CloudBase-AI-ToolKit)  
-
-> 本项目基于 [**CloudBase AI ToolKit**](https://github.com/TencentCloudBase/CloudBase-AI-ToolKit) 开发，通过AI提示词和 MCP 协议+云开发，让开发更智能、更高效，支持AI生成全栈代码、一键部署至腾讯云开发（免服务器）、智能日志修复。
-
 
 [![Powered by CloudBase](https://7463-tcb-advanced-a656fc-1257967285.tcb.qcloud.la/mcp/powered-by-cloudbase-badge.svg)](https://github.com/TencentCloudBase/CloudBase-AI-ToolKit)  
 
@@ -128,11 +115,9 @@ npm run build
 
 首页位于 `src/pages/HomePage.jsx`，是应用的默认入口页面。您可以根据项目需求自定义首页内容。
 
-
 ## 路由系统说明
 
 本项目使用 React Router 6 作为路由系统，并采用 HashRouter 实现路由管理，这样可以更好地兼容静态网站托管服务，避免刷新页面时出现 404 错误。
-
 
 ### 当前路由结构
 
@@ -238,8 +223,6 @@ const ComponentWithNavigation = () => {
   );
 };
 ```
-
-
 
 ## 云开发功能说明
 
