@@ -1,7 +1,5 @@
 # 施小雅板材H5网站 V2
 
-基于 React、Vite 和腾讯云开发（CloudBase）的现代化板材企业展示网站，专为施小雅板材公司打造的专业H5展示平台。
-
 ## 版本信息
 
 **当前版本：V1.2.1** (2025-08-26)
@@ -23,6 +21,17 @@
 - ✅ 实现响应式设计
 - ✅ 添加产品展示功能
 - ✅ 集成询盘管理系统
+
+---
+
+# CloudBase React 模板
+
+基于 React、Vite 和腾讯云开发（CloudBase）的现代化 Web 应用模板，为开发者提供了快速构建全栈应用的能力。
+
+
+[![Powered by CloudBase](https://7463-tcb-advanced-a656fc-1257967285.tcb.qcloud.la/mcp/powered-by-cloudbase-badge.svg)](https://github.com/TencentCloudBase/CloudBase-AI-ToolKit)  
+
+> 本项目基于 [**CloudBase AI ToolKit**](https://github.com/TencentCloudBase/CloudBase-AI-ToolKit) 开发，通过AI提示词和 MCP 协议+云开发，让开发更智能、更高效，支持AI生成全栈代码、一键部署至腾讯云开发（免服务器）、智能日志修复。
 
 
 [![Powered by CloudBase](https://7463-tcb-advanced-a656fc-1257967285.tcb.qcloud.la/mcp/powered-by-cloudbase-badge.svg)](https://github.com/TencentCloudBase/CloudBase-AI-ToolKit)  
