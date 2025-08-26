@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信访问测试</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; }
+        .test-item { margin: 15px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background: #e8f5e8; border-color: #07c160; }
+        .error { background: #fef0f0; border-color: #f56565; }
+        .warning { background: #fffbeb; border-color: #f6ad55; }
+        button { background: #07c160; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 微信访问测试工具</h1>
+    
+    <div id="env-check" class="test-item">
+        <h3>环境检测</h3>
+        <p id="env-result">检测中...</p>
+    </div>
+    
+    <div class="test-item">
+        <h3>🎯 推荐域名</h3>
+        <p><strong>CloudBase域名（推荐）：</strong></p>
+        <p><a href="https://shixiaoya-h5-v1-6g5yuo5c2842bfb3-1308520983.tcloudbaseapp.com" target="_blank">
+            https://shixiaoya-h5-v1-6g5yuo5c2842bfb3-1308520983.tcloudbaseapp.com
+        </a></p>
+        <button onclick="testDomain('https://shixiaoya-h5-v1-6g5yuo5c2842bfb3-1308520983.tcloudbaseapp.com')">测试访问</button>
+    </div>
+    
+    <div class="test-item">
+        <h3>🔗 短链接工具</h3>
+        <p>如果直接访问受限，请使用短链接：</p>
+        <button onclick="window.open('https://t.cn', '_blank')">新浪短链接</button>
+        <button onclick="window.open('https://dwz.cn', '_blank')">百度短链接</button>
+    </div>
+    
+    <div class="test-item">
+        <h3>📋 操作指南</h3>
+        <ol>
+            <li><strong>立即测试</strong>：点击上方"测试访问"按钮</li>
+            <li><strong>如果受限</strong>：使用短链接服务</li>
+            <li><strong>分享给用户</strong>：告知在浏览器中打开</li>
+        </ol>
+    </div>
+    
+    <div id="test-result" class="test-item" style="display: none;">
+        <h3>测试结果</h3>
+        <p id="result-text"></p>
+    </div>
+
+    <script>
+        // 环境检测
+        function checkEnvironment() {
+            const isWeChat = /micromessenger/i.test(navigator.userAgent);
+            const isIOS = /iphone|ipad/i.test(navigator.userAgent);
+            const isAndroid = /android/i.test(navigator.userAgent);
+            
+            const envResult = document.getElementById('env-result');
+            const envCheck = document.getElementById('env-check');
+            
+            let html = `
+                <p>微信环境：${isWeChat ? '✅ 是' : '❌ 否'}</p>
+                <p>操作系统：${isIOS ? 'iOS' : isAndroid ? 'Android' : '桌面端'}</p>
+            `;
+            
+            if (isWeChat) {
+                html += '<p style="color: #07c160;">✅ 在微信中，可以进行真实测试</p>';
+                envCheck.className = 'test-item success';
+            } else {
+                html += '<p style="color: #f6ad55;">⚠️ 不在微信中，建议在微信中测试</p>';
+                envCheck.className = 'test-item warning';
+            }
+            
+            envResult.innerHTML = html;
+        }
+        
+        // 测试域名访问
+        function testDomain(url) {
+            const resultDiv = document.getElementById('test-result');
+            const resultText = document.getElementById('result-text');
+            
+            resultDiv.style.display = 'block';
+            resultText.innerHTML = '测试中...';
+            
+            // 尝试访问域名
+            const testImg = new Image();
+            const timeout = setTimeout(() => {
+                resultText.innerHTML = `
+                    <p style="color: #f56565;">❌ 访问超时，可能被限制</p>
+                    <p><strong>建议：</strong></p>
+                    <ul>
+                        <li>使用短链接服务</li>
+                        <li>引导用户在浏览器中打开</li>
+                        <li>联系微信客服申请解封</li>
+                    </ul>
+                `;
+                resultDiv.className = 'test-item error';
+            }, 5000);
+            
+            testImg.onload = () => {
+                clearTimeout(timeout);
+                resultText.innerHTML = `
+                    <p style="color: #07c160;">✅ 域名可以正常访问</p>
+                    <p>您可以直接使用这个域名进行分享</p>
+                `;
+                resultDiv.className = 'test-item success';
+            };
+            
+            testImg.onerror = () => {
+                clearTimeout(timeout);
+                // 尝试直接跳转测试
+                window.open(url, '_blank');
+                resultText.innerHTML = `
+                    <p style="color: #f6ad55;">⚠️ 图片测试失败，已尝试打开页面</p>
+                    <p>请检查新打开的页面是否正常显示</p>
+                `;
+                resultDiv.className = 'test-item warning';
+            };
+            
+            testImg.src = url + '/vite.svg?' + Date.now();
+        }
+        
+        // 页面加载时检测环境
+        window.onload = checkEnvironment;
+    </script>
+</body>
+</html>

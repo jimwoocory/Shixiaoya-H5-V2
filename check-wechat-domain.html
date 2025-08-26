@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信域名检测工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #07c160;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #06ad56;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #e8f5e8;
+            border: 1px solid #07c160;
+            color: #06ad56;
+        }
+        .error {
+            background: #fef0f0;
+            border: 1px solid #f56565;
+            color: #e53e3e;
+        }
+        .warning {
+            background: #fffbeb;
+            border: 1px solid #f6ad55;
+            color: #dd6b20;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 微信域名检测工具</h1>
+        <p>检测您的域名在微信中的访问状态</p>
+        
+        <div class="input-group">
+            <label>输入要检测的域名：</label>
+            <input type="url" id="domainInput" placeholder="https://your-domain.com" 
+                   value="https://shixiaoya-h5-v1-6g5yuo5c2842bfb3-1308520983.tcloudbaseapp.com">
+        </div>
+        
+        <button onclick="checkDomain()">检测域名状态</button>
+        <button onclick="generateShortLink()">生成短链接</button>
+        <button onclick="checkWechatUA()">检测微信环境</button>
+        
+        <div id="result" class="result"></div>
+        
+        <h2>📱 当前可用域名</h2>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+            <h3>1. CloudBase域名（推荐）</h3>
+            <p><strong>https://shixiaoya-h5-v1-6g5yuo5c2842bfb3-1308520983.tcloudbaseapp.com</strong></p>
+            <p>✅ 腾讯云服务，微信兼容性好</p>
+            
+            <h3>2. 备用方案</h3>
+            <p>• 使用短链接服务（t.cn, dwz.cn）</p>
+            <p>• 申请自有域名并备案</p>
+            <p>• 开发微信小程序版本</p>
+        </div>
+        
+        <h2>🛠️ 解决步骤</h2>
+        <ol>
+            <li><strong>立即使用</strong>：切换到CloudBase域名</li>
+            <li><strong>短期方案</strong>：生成短链接分享</li>
+            <li><strong>长期方案</strong>：申请域名备案</li>
+        </ol>
+    </div>
+
+    <script>
+        function checkDomain() {
+            const domain = document.getElementById('domainInput').value;
+            const result = document.getElementById('result');
+            
+            if (!domain) {
+                showResult('请输入有效的域名', 'error');
+                return;
+            }
+            
+            // 检测是否在微信中
+            const isWechat = /micromessenger/i.test(navigator.userAgent);
+            
+            if (isWechat) {
+                // 在微信中，尝试访问域名
+                fetch(domain, { mode: 'no-cors' })
+                    .then(() => {
+                        showResult(`✅ 域名 ${domain} 在微信中可以正常访问`, 'success');
+                    })
+                    .catch(() => {
+                        showResult(`❌ 域名 ${domain} 在微信中被限制访问`, 'error');
+                    });
+            } else {
+                showResult(`⚠️ 请在微信中打开此页面进行检测`, 'warning');
+            }
+        }
+        
+        function generateShortLink() {
+            const domain = document.getElementById('domainInput').value;
+            if (!domain) {
+                showResult('请先输入域名', 'error');
+                return;
+            }
+            
+            const shortLinkServices = [
+                { name: '新浪短链接', url: `https://t.cn/` },
+                { name: '百度短链接', url: `https://dwz.cn/` },
+                { name: '腾讯短链接', url: `https://url.cn/` }
+            ];
+            
+            let html = '<h3>🔗 短链接服务</h3>';
+            shortLinkServices.forEach(service => {
+                html += `<p><a href="${service.url}" target="_blank">${service.name}</a> - 手动生成短链接</p>`;
+            });
+            html += `<p><strong>原链接：</strong>${domain}</p>`;
+            
+            showResult(html, 'success');
+        }
+        
+        function checkWechatUA() {
+            const isWechat = /micromessenger/i.test(navigator.userAgent);
+            const isIOS = /iphone|ipad/i.test(navigator.userAgent);
+            const isAndroid = /android/i.test(navigator.userAgent);
+            
+            let html = '<h3>📱 环境检测结果</h3>';
+            html += `<p>微信环境：${isWechat ? '✅ 是' : '❌ 否'}</p>`;
+            html += `<p>操作系统：${isIOS ? 'iOS' : isAndroid ? 'Android' : '其他'}</p>`;
+            html += `<p>User Agent：${navigator.userAgent}</p>`;
+            
+            showResult(html, isWechat ? 'success' : 'warning');
+        }
+        
+        function showResult(message, type) {
+            const result = document.getElementById('result');
+            result.innerHTML = message;
+            result.className = `result ${type}`;
+            result.style.display = 'block';
+        }
+        
+        // 页面加载时自动检测
+        window.onload = function() {
+            checkWechatUA();
+        };
+    </script>
+</body>
+</html>

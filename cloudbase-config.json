@@ -1,0 +1,61 @@
+{
+  "envId": "your-env-id",
+  "region": "ap-shanghai",
+  "functionRoot": "./functions",
+  "functions": [
+    {
+      "name": "shixiaoya-api",
+      "timeout": 60,
+      "envVariables": {
+        "NODE_ENV": "production"
+      },
+      "runtime": "Nodejs18.15",
+      "memorySize": 512,
+      "handler": "index.main"
+    }
+  ],
+  "hosting": {
+    "root": "./shixiaoya-website/dist",
+    "index": "index.html",
+    "error": "index.html"
+  },
+  "database": {
+    "collections": [
+      {
+        "name": "categories",
+        "permissions": {
+          "read": true,
+          "write": "auth.uid != null"
+        }
+      },
+      {
+        "name": "products", 
+        "permissions": {
+          "read": true,
+          "write": "auth.uid != null"
+        }
+      },
+      {
+        "name": "inquiries",
+        "permissions": {
+          "read": "auth.uid != null",
+          "write": true
+        }
+      },
+      {
+        "name": "cases",
+        "permissions": {
+          "read": true,
+          "write": "auth.uid != null"
+        }
+      },
+      {
+        "name": "users",
+        "permissions": {
+          "read": "auth.uid != null",
+          "write": "auth.uid != null"
+        }
+      }
+    ]
+  }
+}

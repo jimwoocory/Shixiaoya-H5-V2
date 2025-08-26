@@ -1,0 +1,12 @@
+{
+  "name": "shixiaoya-api",
+  "version": "1.0.0",
+  "description": "施小雅板材API云函数",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.4.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

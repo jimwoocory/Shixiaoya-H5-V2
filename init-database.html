@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>施小雅板材 - 数据库初始化</title>
+    <script src="https://web.sdk.qcloud.com/tcb-js-sdk/1.10.10/tcb.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .btn:hover { background: #0056b3; }
+        .success { color: green; }
+        .error { color: red; }
+        .log { background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🗄️ 施小雅板材数据库初始化</h1>
+    
+    <div class="log" id="log">
+        <p>点击下面的按钮来初始化数据库...</p>
+    </div>
+    
+    <button class="btn" onclick="initDatabase()">🚀 初始化数据库</button>
+    <button class="btn" onclick="createSampleData()">📦 创建示例数据</button>
+    <button class="btn" onclick="testConnection()">🔗 测试连接</button>
+    
+    <script>
+        // 初始化 CloudBase
+        const tcb = window.tcb;
+        const app = tcb.init({
+            env: 'shixiaoya-h5-v1-6g5yuo5c2842bfb3'
+        });
+        
+        const db = app.database();
+        
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            logDiv.innerHTML += `<p class="${className}">${new Date().toLocaleTimeString()} - ${message}</p>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        async function testConnection() {
+            log('🔗 测试 CloudBase 连接...');
+            try {
+                const result = await db.collection('test').limit(1).get();
+                log('✅ CloudBase 连接成功！', 'success');
+            } catch (error) {
+                log(`❌ 连接失败: ${error.message}`, 'error');
+            }
+        }
+        
+        async function initDatabase() {
+            log('🗄️ 开始初始化数据库...');
+            
+            const collections = ['categories', 'products', 'inquiries', 'cases', 'users'];
+            
+            for (const collectionName of collections) {
+                try {
+                    log(`📁 创建集合: ${collectionName}`);
+                    // 尝试向集合添加一个临时文档来创建集合
+                    await db.collection(collectionName).add({
+                        _temp: true,
+                        createdAt: new Date()
+                    });
+                    log(`✅ 集合 ${collectionName} 创建成功`, 'success');
+                } catch (error) {
+                    log(`❌ 创建集合 ${collectionName} 失败: ${error.message}`, 'error');
+                }
+            }
+            
+            log('🎉 数据库初始化完成！', 'success');
+        }
+        
+        async function createSampleData() {
+            log('📦 开始创建示例数据...');
+            
+            try {
+                // 创建分类数据
+                log('📂 创建产品分类...');
+                const categories = [
+                    {
+                        name: '实木板材',
+                        slug: 'solid-wood',
+                        description: '优质实木板材，环保健康，纹理自然',
+                        sort: 1,
+                        isActive: true,
+                        createdAt: new Date()
+                    },
+                    {
+                        name: '人造板材',
+                        slug: 'engineered-wood',
+                        description: '高品质人造板材，性能稳定，用途广泛',
+                        sort: 2,
+                        isActive: true,
+                        createdAt: new Date()
+                    },
+                    {
+                        name: '装饰板材',
+                        slug: 'decorative-board',
+                        description: '精美装饰板材，美观实用，装修首选',
+                        sort: 3,
+                        isActive: true,
+                        createdAt: new Date()
+                    }
+                ];
+                
+                for (const category of categories) {
+                    await db.collection('categories').add(category);
+                }
+                log('✅ 分类数据创建完成', 'success');
+                
+                // 创建产品数据
+                log('📦 创建产品数据...');
+                const products = [
+                    {
+                        name: '优质橡木板',
+                        slug: 'premium-oak-board',
+                        description: '进口橡木制作，质地坚硬，纹理美观，适用于高端家具制作',
+                        price: 299.00,
+                        originalPrice: 399.00,
+                        specifications: {
+                            thickness: '18mm',
+                            size: '1220x2440mm',
+                            grade: 'E0级',
+                            moisture: '8-12%'
+                        },
+                        features: ['环保E0级', '防潮处理', '纹理清晰', '质地坚硬'],
+                        categoryId: 'solid-wood',
+                        isHot: true,
+                        isNew: false,
+                        stock: 100,
+                        sort: 1,
+                        isActive: true,
+                        createdAt: new Date()
+                    },
+                    {
+                        name: '多层实木板',
+                        slug: 'multi-layer-plywood',
+                        description: '多层实木胶合板，结构稳定，不易变形，适合各种装修需求',
+                        price: 189.00,
+                        originalPrice: 229.00,
+                        specifications: {
+                            thickness: '15mm',
+                            size: '1220x2440mm',
+                            grade: 'E1级',
+                            layers: '9层'
+                        },
+                        features: ['结构稳定', '不易变形', '握钉力强', '防潮性好'],
+                        categoryId: 'engineered-wood',
+                        isHot: true,
+                        isNew: true,
+                        stock: 200,
+                        sort: 2,
+                        isActive: true,
+                        createdAt: new Date()
+                    }
+                ];
+                
+                for (const product of products) {
+                    await db.collection('products').add(product);
+                }
+                log('✅ 产品数据创建完成', 'success');
+                
+                // 创建案例数据
+                log('🏗️ 创建案例数据...');
+                const cases = [
+                    {
+                        title: '上海某高端住宅项目',
+                        slug: 'shanghai-luxury-residence',
+                        description: '采用优质橡木板材，打造高端住宅空间，展现自然木质纹理的魅力',
+                        location: '上海市浦东新区',
+                        area: '300㎡',
+                        projectType: '住宅装修',
+                        materials: ['优质橡木板', '多层实木板'],
+                        clientName: '张先生',
+                        completedAt: new Date('2024-10-15'),
+                        isActive: true,
+                        sort: 1,
+                        createdAt: new Date()
+                    }
+                ];
+                
+                for (const caseItem of cases) {
+                    await db.collection('cases').add(caseItem);
+                }
+                log('✅ 案例数据创建完成', 'success');
+                
+                log('🎉 示例数据创建完成！', 'success');
+                
+            } catch (error) {
+                log(`❌ 创建示例数据失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 页面加载时测试连接
+        window.onload = function() {
+            log('🚀 施小雅板材数据库初始化工具已加载');
+            testConnection();
+        };
+    </script>
+</body>
+</html>

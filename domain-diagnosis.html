@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>域名诊断工具</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-item { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 域名诊断工具</h1>
+    
+    <div class="test-item">
+        <h3>1. DNS解析测试</h3>
+        <button onclick="testDNS()">测试DNS解析</button>
+        <div id="dns-result" class="result"></div>
+    </div>
+    
+    <div class="test-item">
+        <h3>2. 域名连通性测试</h3>
+        <button onclick="testConnectivity()">测试连通性</button>
+        <div id="connectivity-result" class="result"></div>
+    </div>
+    
+    <div class="test-item">
+        <h3>3. SSL证书测试</h3>
+        <button onclick="testSSL()">测试SSL</button>
+        <div id="ssl-result" class="result"></div>
+    </div>
+    
+    <div class="test-item">
+        <h3>4. 备用访问地址</h3>
+        <p>如果主域名无法访问，请尝试以下地址：</p>
+        <ul>
+            <li><a href="https://shixiaoya-website.vercel.app" target="_blank">https://shixiaoya-website.vercel.app</a></li>
+            <li><a href="https://shixiaoya-website-jimwoocorys-projects.vercel.app" target="_blank">https://shixiaoya-website-jimwoocorys-projects.vercel.app</a></li>
+        </ul>
+    </div>
+    
+    <div class="test-item">
+        <h3>5. DNS配置检查</h3>
+        <p>请确认您的DNS记录配置如下：</p>
+        <pre>
+类型: A
+主机记录: @
+记录值: 76.76.21.21
+TTL: 600
+
+类型: A
+主机记录: www
+记录值: 76.76.21.21
+TTL: 600
+        </pre>
+    </div>
+
+    <script>
+        async function testDNS() {
+            const result = document.getElementById('dns-result');
+            result.innerHTML = '正在测试DNS解析...';
+            
+            try {
+                // 使用公共DNS API测试解析
+                const response = await fetch('https://dns.google/resolve?name=shixiaoya.asia&type=A');
+                const data = await response.json();
+                
+                if (data.Answer && data.Answer.length > 0) {
+                    const ip = data.Answer[0].data;
+                    result.innerHTML = `✅ DNS解析成功！IP地址: ${ip}`;
+                    result.className = 'result success';
+                } else {
+                    result.innerHTML = '❌ DNS解析失败，记录不存在或未生效';
+                    result.className = 'result error';
+                }
+            } catch (error) {
+                result.innerHTML = `❌ DNS测试失败: ${error.message}`;
+                result.className = 'result error';
+            }
+        }
+        
+        async function testConnectivity() {
+            const result = document.getElementById('connectivity-result');
+            result.innerHTML = '正在测试连通性...';
+            
+            const domains = [
+                'https://shixiaoya.asia',
+                'https://www.shixiaoya.asia',
+                'https://shixiaoya-website.vercel.app'
+            ];
+            
+            let results = [];
+            
+            for (const domain of domains) {
+                try {
+                    const response = await fetch(domain, { method: 'HEAD', mode: 'no-cors' });
+                    results.push(`✅ ${domain} - 可访问`);
+                } catch (error) {
+                    results.push(`❌ ${domain} - 无法访问`);
+                }
+            }
+            
+            result.innerHTML = results.join('<br>');
+        }
+        
+        async function testSSL() {
+            const result = document.getElementById('ssl-result');
+            result.innerHTML = '正在测试SSL证书...';
+            
+            try {
+                const response = await fetch('https://shixiaoya.asia', { method: 'HEAD' });
+                result.innerHTML = '✅ SSL证书有效';
+                result.className = 'result success';
+            } catch (error) {
+                result.innerHTML = `❌ SSL证书问题: ${error.message}`;
+                result.className = 'result error';
+            }
+        }
+    </script>
+</body>
+</html>
